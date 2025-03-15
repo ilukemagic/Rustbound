@@ -1,8 +1,12 @@
 mod command;
+mod item;
+mod location;
+mod npc;
 mod player;
 mod world;
 
 use command::Command;
+use location::Location;
 use player::Player;
 use std::io;
 use world::World;
@@ -18,7 +22,13 @@ fn main() -> io::Result<()> {
     // game loop
     loop {
         if let Some(room) = world.current_room(player.position) {
+            // 获取当前位置的枚举
+            let current_location = player.current_location();
+
+            // 显示位置名称
+            println!("\n[{}]", location_name(&current_location));
             println!("{}", room.description);
+
             if !room.items.is_empty() {
                 println!("You see: {}", room.items.join(", "));
             }
@@ -35,6 +45,14 @@ fn main() -> io::Result<()> {
                 Command::Go(direction) => {
                     if let Err(e) = player.move_to(&direction) {
                         println!("{}", e);
+                    } else {
+                        // 显示移动成功的信息
+                        let new_location = player.current_location();
+                        println!(
+                            "You moved {} to {}.",
+                            direction,
+                            location_name(&new_location)
+                        );
                     }
                 }
                 Command::Take(item) => {
@@ -98,6 +116,11 @@ fn main() -> io::Result<()> {
         }
     }
     Ok(())
+}
+
+// 辅助函数：根据Location枚举返回位置名称
+fn location_name(location: &Location) -> String {
+    location.to_string()
 }
 
 fn display_help() {

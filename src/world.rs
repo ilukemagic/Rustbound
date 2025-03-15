@@ -1,3 +1,7 @@
+use crate::item::Item;
+use crate::location::Location;
+use crate::npc::Npc;
+
 #[derive(Debug)]
 pub struct Room {
     pub description: String,
@@ -26,139 +30,202 @@ impl World {
             rooms.push(row);
         }
 
-        // Starting area - Mysterious Forest
-        rooms[0][0].description = String::from(
-            "Entrance to the mysterious forest. Moonlight filters through the dense leaves, creating dappled shadows on the ground. Low growls of wild beasts can be heard in the distance.",
-        );
-        rooms[0][0].items.push(String::from("rusty sword"));
-        rooms[0][0].items.push(String::from("small potion"));
+        // 使用Location枚举初始化房间
+        let locations = [
+            Location::MysteriousForest,
+            Location::DeepForest,
+            Location::ForestCabin,
+            Location::MountainBase,
+            Location::MountainSlope,
+            Location::MountainPeak,
+            Location::TempleInterior,
+            Location::UndergroundPassage,
+            Location::UndergroundCave,
+            Location::TreasureRoom,
+            Location::Riverside,
+            Location::SmallVillage,
+            Location::BlacksmithShop,
+            Location::Wasteland,
+            Location::DesertOasis,
+            Location::AncientRuins,
+            Location::RuinsInterior,
+            Location::MysteriousPortal,
+        ];
 
-        // Deep Forest
-        rooms[0][1].description = String::from(
-            "Deep in the forest. The trees are denser here, blocking almost all sunlight. You can hear birds singing and leaves rustling.",
-        );
-        rooms[0][1].items.push(String::from("wooden shield"));
-        rooms[0][1].npc = Some(String::from("forest elf"));
+        // 初始化每个位置
+        for location in locations.iter() {
+            let (x, y) = location.get_coordinates();
+            if x >= 0 && y >= 0 {
+                rooms[x as usize][y as usize].description = location.get_description().to_string();
+            }
+        }
 
-        // Forest Cabin
-        rooms[1][0].description = String::from(
-            "A dilapidated wooden cabin sits at the edge of the forest. The door is half-open, and there are signs that someone lives here.",
-        );
-        rooms[1][0].items.push(String::from("old map"));
-        rooms[1][0].items.push(String::from("lantern"));
-        rooms[1][0].npc = Some(String::from("old hunter"));
-
-        // Mountain Base
-        rooms[1][1].description = String::from(
-            "You stand at the foot of a tall mountain. The path winds upward, looking quite steep. An old man rests against a large rock.",
-        );
-        rooms[1][1].items.push(String::from("climbing rope"));
-        rooms[1][1].npc = Some(String::from("old man"));
-
-        // Mountain Slope
-        rooms[1][2].description = String::from(
-            "A platform on the mountainside offers a view of the forest below. The air is thin, making breathing somewhat difficult.",
-        );
-        rooms[1][2].items.push(String::from("strange crystal"));
-
-        // Mountain Peak
-        rooms[2][2].description = String::from(
-            "The mountain peak is shrouded in clouds, limiting visibility. An ancient temple stands here, with strange runes at its entrance.",
-        );
-        rooms[2][2].items.push(String::from("ancient key"));
-        rooms[2][2].npc = Some(String::from("mountain sage"));
-
-        // Temple Interior
-        rooms[2][3].description = String::from(
-            "The temple interior is dimly lit, with walls covered in ancient writings and patterns. In the center is an altar with a glowing object on it.",
-        );
-        rooms[2][3].items.push(String::from("glowing orb"));
-        rooms[2][3].items.push(String::from("ceremonial dagger"));
-
-        // Underground Passage
-        rooms[2][1].description = String::from(
-            "A hidden entrance to an underground passage. Steps lead down into darkness. Several torches hang on the walls.",
-        );
-        rooms[2][1].items.push(String::from("torch"));
-
-        // Underground Cave
-        rooms[3][1].description = String::from(
-            "A damp underground cave with water dripping from the ceiling. In the center is a small pond, its surface as still as a mirror.",
-        );
-        rooms[3][1].items.push(String::from("healing herb"));
-        rooms[3][1].items.push(String::from("mysterious potion"));
-        rooms[3][1].npc = Some(String::from("cave dweller"));
-
-        // Treasure Room
-        rooms[3][2].description = String::from(
-            "A hidden treasure room! The walls are embedded with gems, and gold coins and jewels are scattered on the floor. A huge chest sits in the corner.",
-        );
-        rooms[3][2].items.push(String::from("golden key"));
-        rooms[3][2].items.push(String::from("jeweled crown"));
-        rooms[3][2].items.push(String::from("magic scroll"));
-
-        // Riverside
-        rooms[0][2].description = String::from(
-            "A clear river flows down from the mountain. The water is cool, with fish swimming in it. There's a simple dock by the riverbank.",
-        );
-        rooms[0][2].items.push(String::from("fishing rod"));
-        rooms[0][2].npc = Some(String::from("fisherman"));
-
-        // Small Village
-        rooms[0][3].description = String::from(
-            "A peaceful small village. Several thatched cottages are scattered along the road, with villagers going about their daily activities. There's a well in the center.",
-        );
-        rooms[0][3].items.push(String::from("bread"));
-        rooms[0][3].items.push(String::from("water flask"));
-        rooms[0][3].npc = Some(String::from("village elder"));
-
-        // Blacksmith's Shop
-        rooms[1][3].description = String::from(
-            "The village blacksmith's shop. The forge is blazing as the blacksmith crafts weapons. Various tools and finished weapons hang on the walls.",
-        );
-        rooms[1][3].items.push(String::from("steel sword"));
-        rooms[1][3].npc = Some(String::from("blacksmith"));
-
-        // Wasteland
-        rooms[4][0].description = String::from(
-            "A barren land with almost no vegetation. The ground is cracked, with tumbleweeds occasionally passing by. Something seems to be moving in the distance.",
-        );
-        rooms[4][0].items.push(String::from("cracked bone"));
-        rooms[4][0].npc = Some(String::from("wandering merchant"));
-
-        // Desert Oasis
-        rooms[4][1].description = String::from(
-            "An oasis in the desert. Palm trees surround a small pool, providing rare shade. Several camels rest nearby.",
-        );
-        rooms[4][1].items.push(String::from("exotic fruit"));
-        rooms[4][1].items.push(String::from("waterskin"));
-        rooms[4][1].npc = Some(String::from("desert nomad"));
-
-        // Ancient Ruins
-        rooms[4][2].description = String::from(
-            "Ancient ruins in the desert. Half-buried stone columns and broken walls tell of past glory. Mysterious symbols mark the entrance.",
-        );
-        rooms[4][2].items.push(String::from("ancient tablet"));
-        rooms[4][2].items.push(String::from("scarab amulet"));
-
-        // Ruins Interior
-        rooms[4][3].description = String::from(
-            "The main hall of the ruins. Tall stone columns support the ceiling, and murals on the walls tell ancient stories. A sarcophagus sits in the center.",
-        );
-        rooms[4][3].items.push(String::from("pharaoh's mask"));
-        rooms[4][3].npc = Some(String::from("guardian spirit"));
-
-        // Mysterious Portal
-        rooms[4][4].description = String::from(
-            "A mysterious portal glowing with blue light stands in the deepest part of the ruins. Energy fluctuations distort the air, seemingly leading to another world.",
-        );
-        rooms[4][4].items.push(String::from("dimensional key"));
+        // 添加物品和NPC
+        World::add_items_and_npcs(&mut rooms);
 
         World { rooms }
     }
 
+    // 添加物品和NPC的辅助函数
+    fn add_items_and_npcs(rooms: &mut Vec<Vec<Room>>) {
+        // 神秘森林入口
+        let (x, y) = Location::MysteriousForest.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::RustySword.to_string());
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::SmallPotion.to_string());
+
+        // 深林
+        let (x, y) = Location::DeepForest.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::WoodenShield.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::ForestElf.to_string());
+
+        // 森林小屋
+        let (x, y) = Location::ForestCabin.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::OldMap.to_string());
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::Lantern.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::OldHunter.to_string());
+
+        // 山脚
+        let (x, y) = Location::MountainBase.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::ClimbingRope.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::OldMan.to_string());
+
+        // 山坡
+        let (x, y) = Location::MountainSlope.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::StrangeCrystal.to_string());
+
+        // 山顶
+        let (x, y) = Location::MountainPeak.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::AncientKey.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::MountainSage.to_string());
+
+        // 神庙内部
+        let (x, y) = Location::TempleInterior.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::GlowingOrb.to_string());
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::CeremonialDagger.to_string());
+
+        // 地下通道
+        let (x, y) = Location::UndergroundPassage.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::Torch.to_string());
+
+        // 地下洞穴
+        let (x, y) = Location::UndergroundCave.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::HealingHerb.to_string());
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::MysteriousPotion.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::CaveDweller.to_string());
+
+        // 宝藏室
+        let (x, y) = Location::TreasureRoom.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::GoldenKey.to_string());
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::JeweledCrown.to_string());
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::MagicScroll.to_string());
+
+        // 河边
+        let (x, y) = Location::Riverside.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::FishingRod.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::Fisherman.to_string());
+
+        // 小村庄
+        let (x, y) = Location::SmallVillage.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::Bread.to_string());
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::WaterFlask.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::VillageElder.to_string());
+
+        // 铁匠铺
+        let (x, y) = Location::BlacksmithShop.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::SteelSword.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::Blacksmith.to_string());
+
+        // 荒地
+        let (x, y) = Location::Wasteland.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::CrackedBone.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::WanderingMerchant.to_string());
+
+        // 沙漠绿洲
+        let (x, y) = Location::DesertOasis.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::ExoticFruit.to_string());
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::Waterskin.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::DesertNomad.to_string());
+
+        // 古代遗迹
+        let (x, y) = Location::AncientRuins.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::AncientTablet.to_string());
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::ScarabAmulet.to_string());
+
+        // 遗迹内部
+        let (x, y) = Location::RuinsInterior.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::PharaohsMask.to_string());
+        rooms[x as usize][y as usize].npc = Some(Npc::GuardianSpirit.to_string());
+
+        // 神秘传送门
+        let (x, y) = Location::MysteriousPortal.get_coordinates();
+        rooms[x as usize][y as usize]
+            .items
+            .push(Item::DimensionalKey.to_string());
+    }
+
     // get the current room based on the player's position
     pub fn current_room(&self, position: (i32, i32)) -> Option<&Room> {
+        // 使用from_coordinates检查位置是否有效
+        let location = Location::from_coordinates(position.0, position.1);
+
+        // 如果是EmptyArea，表示无效位置
+        if matches!(location, Location::EmptyArea) {
+            return None;
+        }
+
+        // 否则，返回对应的房间
         if position.0 < 0 || position.1 < 0 {
             return None;
         }
@@ -169,6 +236,15 @@ impl World {
 
     // get the current room based on the player's position
     pub fn current_room_mut(&mut self, position: (i32, i32)) -> Option<&mut Room> {
+        // 使用from_coordinates检查位置是否有效
+        let location = Location::from_coordinates(position.0, position.1);
+
+        // 如果是EmptyArea，表示无效位置
+        if matches!(location, Location::EmptyArea) {
+            return None;
+        }
+
+        // 否则，返回对应的房间
         if position.0 < 0 || position.1 < 0 {
             return None;
         }
@@ -206,53 +282,23 @@ impl World {
         }
     }
 
-    // Extended NPC dialogue system
-    pub fn get_npc_response(&self, position: (i32, i32), npc: &str) -> Option<&str> {
+    // 获取NPC对话
+    pub fn get_npc_response(&self, position: (i32, i32), npc_name: &str) -> Option<&str> {
         let room = self.current_room(position)?;
 
         println!(
             "Debug - Room NPC: '{:?}', Requested NPC: '{}'",
-            room.npc, npc
+            room.npc, npc_name
         );
 
-        // Use contains check instead of exact match
+        // 使用contains检查而不是精确匹配
         match &room.npc {
-            Some(name) if name.to_lowercase().contains(&npc.to_lowercase()) => {
-                match name.as_str() {
-                    "old man" => Some(
-                        "Young one, I was once an adventurer like you, until I took an arrow to the knee... The temple at the mountain peak holds many secrets waiting to be discovered.",
-                    ),
-                    "old hunter" => Some(
-                        "This forest has become dangerous lately. If you're going to venture out, take my lantern - you'll need it at night.",
-                    ),
-                    "forest elf" => Some(
-                        "Welcome to the elven forest. We live in harmony with nature. If you seek power, try visiting the temple on the mountain.",
-                    ),
-                    "mountain sage" => Some(
-                        "The temple door can only be opened with the ancient key. Legend says powerful magical items are hidden inside.",
-                    ),
-                    "cave dweller" => Some(
-                        "Deep in the cave is a secret chamber containing treasures of an ancient civilization. But beware of the guardian...",
-                    ),
-                    "fisherman" => Some(
-                        "The fish are particularly active today. If you have a fishing rod, you might try your luck. I've heard someone caught a treasure in the river.",
-                    ),
-                    "village elder" => Some(
-                        "Our village is peaceful, but there have been rumors of strange creatures appearing in the wasteland. Be careful, young one.",
-                    ),
-                    "blacksmith" => Some(
-                        "This steel sword is my masterpiece! You can easily defeat those beasts with it. If you find rare metals, I can forge even better weapons for you.",
-                    ),
-                    "wandering merchant" => Some(
-                        "I have all sorts of curious goods from distant lands. Do you have anything to trade? I'm particularly interested in those glowing crystals.",
-                    ),
-                    "desert nomad" => Some(
-                        "Carry plenty of water when traveling in the desert. Those ruins over there have existed for thousands of years, said to contain the pharaoh's treasure.",
-                    ),
-                    "guardian spirit" => Some(
-                        "I have guarded this ruin for a thousand years. Only a true hero can pass the final trial and receive the pharaoh's blessing.",
-                    ),
-                    _ => Some("Hello, traveler. May your adventures be filled with wonder."),
+            Some(name) if name.to_lowercase().contains(&npc_name.to_lowercase()) => {
+                // 尝试将字符串转换为Npc枚举
+                if let Some(npc) = Npc::from_string(name) {
+                    Some(npc.get_dialogue())
+                } else {
+                    Some("Hello, traveler. May your adventures be filled with wonder.")
                 }
             }
             _ => None,
