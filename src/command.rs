@@ -7,6 +7,7 @@ pub enum Command {
     Inventory,
     Drop(String),
     Name(String),
+    Help,
     Quit,
     Invalid,
 }
@@ -61,6 +62,7 @@ impl Command {
                     Command::Invalid
                 }
             }
+            Some("help") => Command::Help,
             Some("quit") => Command::Quit,
             Some("use") => {
                 let item_name = parts.collect::<Vec<&str>>().join(" ");

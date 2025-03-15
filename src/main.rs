@@ -12,6 +12,9 @@ fn main() -> io::Result<()> {
     let mut player = Player::new("Adventurer".to_string());
     let mut world = World::new();
 
+    println!("Welcome to Rustbound, {}!", player.get_name());
+    println!("Type 'help' for a list of commands.");
+
     // game loop
     loop {
         if let Some(room) = world.current_room(player.position) {
@@ -73,6 +76,9 @@ fn main() -> io::Result<()> {
                         old_name, new_name
                     );
                 }
+                Command::Help => {
+                    display_help();
+                }
                 Command::Quit => {
                     println!("Goodbye!");
                     break;
@@ -92,4 +98,27 @@ fn main() -> io::Result<()> {
         }
     }
     Ok(())
+}
+
+fn display_help() {
+    println!("\n===== RUSTBOUND - TEXT ADVENTURE GAME =====");
+    println!(
+        "Welcome to Rustbound! Explore the world, collect items, and interact with characters."
+    );
+    println!("\nAVAILABLE COMMANDS:");
+    println!("  go [direction]    - Move in a direction (north, south, east, west)");
+    println!("  take [item]       - Pick up an item from the current room");
+    println!("  drop [item]       - Drop an item from your inventory");
+    println!("  use [item]        - Use an item from your inventory");
+    println!("  talk to [npc]     - Talk to a character in the current room");
+    println!("  inventory         - Check your inventory (shortcut: 'i')");
+    println!("  name [new name]   - Change your character's name");
+    println!("  help              - Display this help message (shortcut: 'h')");
+    println!("  quit              - Exit the game");
+    println!("\nTIPS:");
+    println!("- Explore different rooms by using 'go' in various directions");
+    println!("- Collect items with 'take' and use them with 'use'");
+    println!("- Talk to characters to get information and quests");
+    println!("- Some items have special effects when used in certain locations");
+    println!("=======================================\n");
 }

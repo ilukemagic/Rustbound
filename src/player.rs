@@ -76,11 +76,6 @@ impl Player {
         self.name = name;
     }
 
-    // handle player name display logic
-    pub fn display_name(&self) -> String {
-        format!("Player: {}", self.name)
-    }
-
     // handle player name getter
     pub fn get_name(&self) -> &str {
         &self.name
