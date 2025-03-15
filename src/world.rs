@@ -42,4 +42,37 @@ impl World {
             .get(position.0 as usize)
             .and_then(|row| row.get(position.1 as usize))
     }
+
+    // get the current room based on the player's position
+    pub fn current_room_mut(&mut self, position: (i32, i32)) -> Option<&mut Room> {
+        if position.0 < 0 || position.1 < 0 {
+            return None;
+        }
+        self.rooms
+            .get_mut(position.0 as usize)
+            .and_then(|row| row.get_mut(position.1 as usize))
+    }
+
+    // remove an item from the current room
+    pub fn remove_item_from_current_room(
+        &mut self,
+        position: (i32, i32),
+        item: &str,
+    ) -> Option<String> {
+        let room = self.current_room_mut(position)?;
+        if let Some(index) = room.items.iter().position(|i| i == &item) {
+            Some(room.items.remove(index))
+        } else {
+            None
+        }
+    }
+
+    // handle NPC dialog logic
+    pub fn get_npc_response(&self, position: (i32, i32), npc: &str) -> Option<&str> {
+        let room = self.current_room(position)?;
+        match &room.npc {
+            Some(name) if name == npc => Some("I have a quest for you... (WIP)"),
+            _ => None,
+        }
+    }
 }

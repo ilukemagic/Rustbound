@@ -1,18 +1,20 @@
+mod command;
 mod player;
 mod world;
 
+use command::Command;
 use player::Player;
 use std::io;
 use world::World;
 
-fn main() {
+fn main() -> io::Result<()> {
     // initialize the world
-    let mut plyaer = Player::new("Adventurer".to_string());
-    let world = World::new();
+    let mut player = Player::new("Adventurer".to_string());
+    let mut world = World::new();
 
     // game loop
     loop {
-        if let Some(room) = world.current_room(plyaer.position) {
+        if let Some(room) = world.current_room(player.position) {
             println!("{}", room.description);
             if !room.items.is_empty() {
                 println!("You see: {}", room.items.join(", "));
@@ -24,8 +26,39 @@ fn main() {
             // get player input
             let mut input = String::new();
             println!("\nWhat do you want to do?");
-            // todo: handle errors
-            io::stdin().read_line(&mut input).unwrap();
+            io::stdin().read_line(&mut input)?;
+
+            match Command::parse(&input) {
+                Command::Go(direction) => {
+                    if let Err(e) = player.move_to(&direction) {
+                        println!("{}", e);
+                    }
+                }
+                Command::Take(item) => {
+                    // todo: handle item taking logic
+                    match world.remove_item_from_current_room(player.position, &item) {
+                        Some(item) => {
+                            player.add_to_inventory(item.clone());
+                            println!("You took the {}", item);
+                        }
+                        None => println!("There's no {} here", item),
+                    }
+                }
+                Command::Talk(npc) => {
+                    // todo: handle dialog logic
+                    match world.get_npc_response(player.position, &npc) {
+                        Some(response) => println!("{}: {}", npc, response),
+                        None => println!("There's no one here to talk to"),
+                    }
+                }
+                Command::Quit => {
+                    println!("Goodbye!");
+                    break;
+                }
+                Command::Invalid => {
+                    println!("Invalid command. Please try again.");
+                }
+            }
 
             if input.trim() == "quit" {
                 println!("Goodbye!");
@@ -33,4 +66,5 @@ fn main() {
             }
         }
     }
+    Ok(())
 }
