@@ -58,6 +58,7 @@ impl Player {
         }
     }
 
+    // handle inventory display logic
     pub fn display_inventory(&self) -> String {
         if self.inventory.is_empty() {
             "You have no items in your inventory.".to_string()
@@ -68,5 +69,20 @@ impl Player {
             }
             result
         }
+    }
+
+    // handle player name logic
+    pub fn set_name(&mut self, name: String) {
+        self.name = name;
+    }
+
+    // handle player name display logic
+    pub fn display_name(&self) -> String {
+        format!("Player: {}", self.name)
+    }
+
+    // handle player name getter
+    pub fn get_name(&self) -> &str {
+        &self.name
     }
 }

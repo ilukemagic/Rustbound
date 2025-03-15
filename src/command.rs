@@ -6,6 +6,7 @@ pub enum Command {
     Use(String),
     Inventory,
     Drop(String),
+    Name(String),
     Quit,
     Invalid,
 }
@@ -48,6 +49,14 @@ impl Command {
                 let item_name = parts.collect::<Vec<&str>>().join(" ");
                 if !item_name.is_empty() {
                     Command::Drop(item_name)
+                } else {
+                    Command::Invalid
+                }
+            }
+            Some("name") => {
+                let name = parts.collect::<Vec<&str>>().join(" ");
+                if !name.is_empty() {
+                    Command::Name(name)
                 } else {
                     Command::Invalid
                 }

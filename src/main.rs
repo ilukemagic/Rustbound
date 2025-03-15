@@ -65,6 +65,14 @@ fn main() -> io::Result<()> {
                     }
                     None => println!("You don't have {}", item),
                 },
+                Command::Name(new_name) => {
+                    let old_name = player.get_name().to_string();
+                    player.set_name(new_name.clone());
+                    println!(
+                        "Your name has been changed from {} to {}",
+                        old_name, new_name
+                    );
+                }
                 Command::Quit => {
                     println!("Goodbye!");
                     break;
@@ -72,7 +80,7 @@ fn main() -> io::Result<()> {
                 Command::Invalid => {
                     println!("Available commands:");
                     println!(
-                        "go [direction], take [item], drop [item], use [item], talk to [npc], inventory, quit"
+                        "go [direction], take [item], drop [item], use [item], talk to [npc], inventory, name [new name], quit"
                     );
                 }
             }
