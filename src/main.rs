@@ -35,7 +35,6 @@ fn main() -> io::Result<()> {
                     }
                 }
                 Command::Take(item) => {
-                    // todo: handle item taking logic
                     match world.remove_item_from_current_room(player.position, &item) {
                         Some(item) => {
                             player.add_to_inventory(item.clone());
@@ -44,19 +43,23 @@ fn main() -> io::Result<()> {
                         None => println!("There's no {} here", item),
                     }
                 }
-                Command::Talk(npc) => {
-                    // todo: handle dialog logic
-                    match world.get_npc_response(player.position, &npc) {
-                        Some(response) => println!("{}: {}", npc, response),
-                        None => println!("There's no one here to talk to"),
-                    }
-                }
+                Command::Talk(npc) => match world.get_npc_response(player.position, &npc) {
+                    Some(response) => println!("{}: {}", npc, response),
+                    None => println!("There's no one here to talk to"),
+                },
+                Command::Use(item) => match player.use_item(&item) {
+                    Ok(message) => println!("{}", message),
+                    Err(message) => println!("Error: {}", message),
+                },
                 Command::Quit => {
                     println!("Goodbye!");
                     break;
                 }
                 Command::Invalid => {
-                    println!("Invalid command. Please try again.");
+                    println!("Available commands:");
+                    println!(
+                        "go [direction], take [item], use [item], talk to [npc], inventory, quit"
+                    );
                 }
             }
 

@@ -3,6 +3,7 @@ pub enum Command {
     Go(String),
     Take(String),
     Talk(String),
+    Use(String),
     Quit,
     Invalid,
 }
@@ -39,6 +40,13 @@ impl Command {
                 }
             }
             Some("quit") => Command::Quit,
+            Some("use") => {
+                if let Some(item) = parts.next() {
+                    Command::Use(item.to_string())
+                } else {
+                    Command::Invalid
+                }
+            }
             _ => Command::Invalid,
         }
     }
