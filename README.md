@@ -6,9 +6,11 @@ A command-line text adventure game for learning Rust fundamentals.
 
 - **Core Gameplay**
 
-  - Player management (movement, inventory)
+  - Player management (movement, inventory, name customization)
   - World with grid-based rooms containing items/NPCs
-  - Command parsing: `go <direction>`, `take <item>`, `talk to <npc>`, `quit`
+  - Item interaction (take, drop, use)
+  - NPC dialogue system
+  - Command parsing with comprehensive help system
   - Robust error handling
 
 - **Learning Objectives** 🦀
@@ -20,8 +22,8 @@ A command-line text adventure game for learning Rust fundamentals.
 
 - **Technical Implementation**
   - Modular architecture:
-    - `player.rs`: Player state and inventory
-    - `world.rs`: Room generation and navigation
+    - `player.rs`: Player state and inventory management
+    - `world.rs`: Room generation and item/NPC interactions
     - `command.rs`: Input parsing and validation
     - `main.rs`: Game loop and UI
   - Expandable system for adding new commands/features
@@ -35,24 +37,36 @@ cargo build
 cargo run
 ```
 
-## Example Commands
+## Available Commands
 
 ```text
-> go north
-> take sword
-> talk to old_man
-> quit
+> go [direction]    - Move in a direction (north, south, east, west)
+> take [item]       - Pick up an item from the current room
+> drop [item]       - Drop an item from your inventory
+> use [item]        - Use an item from your inventory
+> talk to [npc]     - Talk to a character in the current room
+> inventory         - Check your inventory
+> name [new name]   - Change your character's name
+> help              - Display help information
+> quit              - Exit the game
 ```
 
 ## Project Structure
 
 ```text
 src/
-├── main.rs # Game loop and entry point
-├── player.rs # Player state management
-├── world.rs # World generation and room data
-└── command.rs # Command parsing system
+├── main.rs       # Game loop and entry point
+├── player.rs     # Player state management
+├── world.rs      # World generation and room data
+└── command.rs    # Command parsing system
 ```
+
+## Game Tips
+
+- Explore different rooms by using 'go' in various directions
+- Collect items with 'take' and use them with 'use'
+- Talk to characters to get information and quests
+- Some items have special effects when used in certain locations
 
 ## Roadmap
 
