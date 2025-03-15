@@ -51,6 +51,20 @@ fn main() -> io::Result<()> {
                     Ok(message) => println!("{}", message),
                     Err(message) => println!("Error: {}", message),
                 },
+                Command::Inventory => println!("{}", player.display_inventory()),
+                Command::Drop(item) => match player.remove_from_inventory(&item) {
+                    Some(dropped_item) => {
+                        if let Err(e) =
+                            world.add_item_to_current_room(player.position, dropped_item.clone())
+                        {
+                            println!("Error: {}", e);
+                            player.add_to_inventory(dropped_item);
+                        } else {
+                            println!("You dropped the {}", dropped_item);
+                        }
+                    }
+                    None => println!("You don't have {}", item),
+                },
                 Command::Quit => {
                     println!("Goodbye!");
                     break;
@@ -58,7 +72,7 @@ fn main() -> io::Result<()> {
                 Command::Invalid => {
                     println!("Available commands:");
                     println!(
-                        "go [direction], take [item], use [item], talk to [npc], inventory, quit"
+                        "go [direction], take [item], drop [item], use [item], talk to [npc], inventory, quit"
                     );
                 }
             }

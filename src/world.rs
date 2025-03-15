@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct Room {
     pub description: String,
     pub items: Vec<String>,
@@ -60,6 +61,7 @@ impl World {
         item: &str,
     ) -> Option<String> {
         let room = self.current_room_mut(position)?;
+        println!("room: {:?}", room);
         if let Some(index) = room.items.iter().position(|i| i == &item) {
             Some(room.items.remove(index))
         } else {
@@ -67,11 +69,34 @@ impl World {
         }
     }
 
+    // add an item to the current room
+    pub fn add_item_to_current_room(
+        &mut self,
+        position: (i32, i32),
+        item: String,
+    ) -> Result<(), String> {
+        if let Some(room) = self.current_room_mut(position) {
+            room.items.push(item);
+            Ok(())
+        } else {
+            Err(format!("Room not found"))
+        }
+    }
+
     // handle NPC dialog logic
     pub fn get_npc_response(&self, position: (i32, i32), npc: &str) -> Option<&str> {
         let room = self.current_room(position)?;
+
+        println!(
+            "Debug - Room NPC: '{:?}', Requested NPC: '{}'",
+            room.npc, npc
+        );
+
+        // 使用包含检查而不是精确匹配
         match &room.npc {
-            Some(name) if name == npc => Some("I have a quest for you... (WIP)"),
+            Some(name) if name.to_lowercase().contains(&npc.to_lowercase()) => {
+                Some("I have a quest for you... (WIP)")
+            }
             _ => None,
         }
     }

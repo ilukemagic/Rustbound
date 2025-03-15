@@ -32,21 +32,41 @@ impl Player {
     }
 
     // handle item removing logic
-    pub fn remove_from_inventory(&mut self, item: String) -> bool {
-        self.inventory.iter().any(|i| i == &item)
+    pub fn remove_from_inventory(&mut self, item: &str) -> Option<String> {
+        if let Some(index) = self.inventory.iter().position(|i| i == item) {
+            Some(self.inventory.remove(index))
+        } else {
+            None
+        }
     }
 
     // handle item using logic
     pub fn use_item(&mut self, item: &str) -> Result<String, String> {
         if let Some(index) = self.inventory.iter().position(|i| i == item) {
-            self.inventory.remove(index);
-            match item {
+            let result = match item {
                 "potion" => Ok("Health restored!".to_string()),
                 "key" => Ok("The door creaks open...".to_string()),
+                "rusty sword" => Ok(
+                    "You swing the rusty sword at the goblin. It's not very effective.".to_string(),
+                ),
                 _ => Err(format!("You can't use {}", item)),
-            }
+            };
+            self.inventory.remove(index);
+            result
         } else {
             Err(format!("You don't have {}", item))
+        }
+    }
+
+    pub fn display_inventory(&self) -> String {
+        if self.inventory.is_empty() {
+            "You have no items in your inventory.".to_string()
+        } else {
+            let mut result = String::from("Inventory:\n");
+            for (index, item) in self.inventory.iter().enumerate() {
+                result.push_str(&format!("{}: {}\n", index + 1, item));
+            }
+            result
         }
     }
 }

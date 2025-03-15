@@ -4,6 +4,8 @@ pub enum Command {
     Take(String),
     Talk(String),
     Use(String),
+    Inventory,
+    Drop(String),
     Quit,
     Invalid,
 }
@@ -22,16 +24,18 @@ impl Command {
                 }
             }
             Some("take") => {
-                if let Some(item) = parts.next() {
-                    Command::Take(item.to_string())
+                let item_name = parts.collect::<Vec<&str>>().join(" ");
+                if !item_name.is_empty() {
+                    Command::Take(item_name)
                 } else {
                     Command::Invalid
                 }
             }
             Some("talk") => {
                 if parts.next() == Some("to") {
-                    if let Some(npc) = parts.next() {
-                        Command::Talk(npc.to_string())
+                    let npc_name = parts.collect::<Vec<&str>>().join(" ");
+                    if !npc_name.is_empty() {
+                        Command::Talk(npc_name)
                     } else {
                         Command::Invalid
                     }
@@ -39,10 +43,20 @@ impl Command {
                     Command::Invalid
                 }
             }
+            Some("inventory") => Command::Inventory,
+            Some("drop") => {
+                let item_name = parts.collect::<Vec<&str>>().join(" ");
+                if !item_name.is_empty() {
+                    Command::Drop(item_name)
+                } else {
+                    Command::Invalid
+                }
+            }
             Some("quit") => Command::Quit,
             Some("use") => {
-                if let Some(item) = parts.next() {
-                    Command::Use(item.to_string())
+                let item_name = parts.collect::<Vec<&str>>().join(" ");
+                if !item_name.is_empty() {
+                    Command::Use(item_name)
                 } else {
                     Command::Invalid
                 }
